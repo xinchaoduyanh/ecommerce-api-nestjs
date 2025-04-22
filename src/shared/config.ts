@@ -18,6 +18,10 @@ if (!fs.existsSync(path.resolve('.env'))) {
   REFRESH_TOKEN_SECRET: z.string(),
   REFRESH_TOKEN_EXPIRES_IN: z.string(),
   SECRET_API_KEY: z.string(),
+  ADMIN_NAME: z.string(),
+  ADMIN_PASSWORD: z.string(),
+  ADMIN_EMAIL: z.string(),
+  ADMIN_PHONE_NUMBER: z.string(),
 })
 
 const configServer = ConfigSchema.safeParse(process.env)
@@ -26,6 +30,6 @@ if (!configServer.success) {
   process.exit(1)
 }
 
-const envConfig = configServer
+const envConfig = configServer.data
 
 export default envConfig

@@ -9,29 +9,29 @@ export class TokenService {
 
   signAccessToken(payload: { userId: number }) {
     return this.jwtService.sign(payload, {
-      secret: envConfig.data.ACCESS_TOKEN_SECRET,
-      expiresIn: envConfig.data.ACCESS_TOKEN_EXPIRES_IN,
+      secret: envConfig.ACCESS_TOKEN_SECRET,
+      expiresIn: envConfig.ACCESS_TOKEN_EXPIRES_IN,
       algorithm: 'HS256',
     })
   }
 
   signRefreshToken(payload: { userId: number }) {
     return this.jwtService.sign(payload, {
-      secret: envConfig.data.REFRESH_TOKEN_SECRET,
-      expiresIn: envConfig.data.REFRESH_TOKEN_EXPIRES_IN,
+      secret: envConfig.REFRESH_TOKEN_SECRET,
+      expiresIn: envConfig.REFRESH_TOKEN_EXPIRES_IN,
       algorithm: 'HS256',
     })
   }
 
   verifyAccessToken(token: string): Promise<TokenPayload> {
     return this.jwtService.verifyAsync(token, {
-      secret: envConfig.data.ACCESS_TOKEN_SECRET,
+      secret: envConfig.ACCESS_TOKEN_SECRET,
     })
   }
 
   verifyRefreshToken(token: string): Promise<TokenPayload> {
     return this.jwtService.verifyAsync(token, {
-      secret: envConfig.data.REFRESH_TOKEN_SECRET,
+      secret: envConfig.REFRESH_TOKEN_SECRET,
     })
   }
 }
