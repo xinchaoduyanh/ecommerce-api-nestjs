@@ -1,10 +1,58 @@
+import { PrismaClient } from '@prisma/client'
 import envConfig from 'src/shared/config'
 import { HashingService } from 'src/shared/services/hashing.service'
-import { PrismaService } from 'src/shared/services/prisma.service'
 import { RoleName } from 'src/shared/constants/role.constants'
-const prisma = new PrismaService()
+
+const prisma = new PrismaClient()
 const hashingService = new HashingService()
-const main = async () => {
+
+async function seedRoles() {
+  try {
+    console.log('🌱 Seeding roles...')
+
+    // Create basic roles
+    const roles = [
+      {
+        name: 'ADMIN',
+        description: 'Administrator role with full access',
+        isActive: true,
+      },
+      {
+        name: 'CLIENT',
+        description: 'Client role for regular users',
+        isActive: true,
+      },
+      {
+        name: 'SELLER',
+        description: 'Seller role for shop owners',
+        isActive: true,
+      },
+    ]
+
+    for (const role of roles) {
+      const existingRole = await prisma.role.findUnique({
+        where: { name: role.name },
+      })
+
+      if (!existingRole) {
+        await prisma.role.create({
+          data: role,
+        })
+        console.log(`✅ Created role: ${role.name}`)
+      } else {
+        console.log(`⏭️  Role already exists: ${role.name}`)
+      }
+    }
+
+    console.log('🎉 Roles seeding completed!')
+  } catch (error) {
+    console.error('❌ Error seeding roles:', error)
+  } finally {
+    await prisma.$disconnect()
+  }
+}
+
+async function main() {
   const roleCount = await prisma.role.count()
   if (roleCount > 0) {
     throw new Error('Roles already exist')
@@ -46,6 +94,8 @@ const main = async () => {
     adminUser,
   }
 }
+
+seedRoles()
 
 main()
   .then(({ adminUser, createdRoleCount }) => {
